@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Red Folder Quant AI — News Prediction & Execution Gate</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap');
+    body { font-family: 'Inter', sans-serif; background-color: #090d16; color: #e2e8f0; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+  </style>
+</head>
+<body class="min-h-screen p-4 md:p-8">
+  <div class="max-w-7xl mx-auto space-y-6">
+
+    <!-- HEADER -->
+    <header class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+      <div>
+        <div class="flex items-center gap-2.5">
+          <span class="px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider bg-rose-500/20 text-rose-400 border border-rose-500/40 rounded">Red Folder AI</span>
+          <span class="text-xs text-slate-400 mono">XAUUSD / MACRO QUANT ENGINE</span>
+        </div>
+        <h1 class="text-2xl md:text-3xl font-bold text-white mt-1">Macro News Prediction & Execution Terminal</h1>
+        <p class="text-sm text-slate-400 mt-0.5">Komparasi Historis FRED + Comprehensive Article Reading + Confidence & Spread Gate</p>
+      </div>
+
+      <!-- API ENDPOINT CONFIG -->
+      <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-3 flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+        <div class="text-xs text-slate-400">
+          <span class="block font-semibold text-slate-300">Python Backend URL (Opsional)</span>
+          <span>Kosongkan untuk Mode Demo GitHub Pages</span>
+        </div>
+        <input id="apiEndpoint" type="text" placeholder="http://localhost:8000/predict"
+          class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-xs mono text-slate-200 focus:outline-none focus:border-emerald-500 w-full sm:w-56" />
+      </div>
+    </header>
+
+    <!-- MAIN GRID -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+      <!-- LEFT COLUMN: INPUT PARAMETERS & SPREAD SIMULATOR -->
+      <section class="lg:col-span-4 bg-slate-900/70 border border-slate-800 rounded-2xl p-5 space-y-4">
+        <h2 class="text-base font-semibold text-white flex items-center justify-between">
+          <span>1. Parameter Event & Broker</span>
+          <span class="text-xs font-normal text-slate-400 mono">T-5 Mins Check</span>
+        </h2>
+
+        <div>
+          <label class="block text-xs font-medium text-slate-400 mb-1">Target Berita High Impact</label>
+          <select id="eventSelect" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+            <option value="US Non-Farm Payrolls (NFP) & Unemployment">US Non-Farm Payrolls (NFP)</option>
+            <option value="US Consumer Price Index (CPI YoY/MoM)">US Consumer Price Index (CPI)</option>
+            <option value="US Producer Price Index (PPI MoM)">US Producer Price Index (PPI)</option>
+            <option value="FOMC Rate Decision & Powell Press Conf">FOMC Rate Cut / Hike Decision</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-medium text-slate-400 mb-1">Consensus Forecast</label>
+            <input id="forecastInput" type="text" value="175K | 4.1%"
+              class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm mono text-white focus:outline-none focus:border-emerald-500" />
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-400 mb-1">Previous Actual</label>
+            <input id="previousInput" type="text" value="165K | 4.1%"
+              class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm mono text-white focus:outline-none focus:border-emerald-500" />
+          </div>
+        </div>
+
+        <!-- SPREAD FILTER CONTROL -->
+        <div class="bg-slate-950 border border-slate-800 rounded-xl p-3.5 space-y-2">
+          <div class="flex justify-between items-center">
+            <label class="text-xs font-medium text-slate-300">Live Broker Spread (XAUUSD)</label>
+            <span id="spreadValueLabel" class="text-xs font-bold mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400">18 poin (Normal)</span>
+          </div>
+          <input id="spreadSlider" type="range" min="5" max="65" value="18"
+            class="w-full accent-emerald-500 cursor-pointer" />
+          <div class="flex justify-between text-[11px] text-slate-500 mono">
+            <span>5 pts</span>
+            <span class="text-amber-400">Batas Max: 30 pts</span>
+            <span>65 pts</span>
+          </div>
+        </div>
+
+        <!-- CONFIDENCE OVERRIDE FOR TESTING -->
+        <div class="bg-slate-950 border border-slate-800 rounded-xl p-3.5 space-y-2">
+          <div class="flex justify-between items-center">
+            <label class="text-xs font-medium text-slate-300">Simulasi AI Confidence Score</label>
+            <span id="confValueLabel" class="text-xs font-bold mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400">86%</span>
+          </div>
+          <input id="confSlider" type="range" min="40" max="98" value="86"
+            class="w-full accent-emerald-500 cursor-pointer" />
+          <div class="flex justify-between text-[11px] text-slate-500 mono">
+            <span>40%</span>
+            <span class="text-amber-400">Gate Min: 80%</span>
+            <span>98%</span>
+          </div>
+        </div>
+
+        <button id="runAnalysisBtn"
+          class="w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-xl text-sm transition shadow-lg shadow-emerald-950/50 cursor-pointer">
+          Jalankan Prediksi & Evaluasi Gate
+        </button>
+      </section>
+
+      <!-- RIGHT COLUMN: AI DECISION & EXECUTION GATE -->
+      <section class="lg:col-span-8 space-y-6">
+
+        <!-- EXECUTION GATE BANNER -->
+        <div id="gateBanner" class="bg-emerald-950/40 border border-emerald-500/40 rounded-2xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div class="space-y-1">
+            <div class="flex items-center gap-2">
+              <span id="gateBadge" class="px-2.5 py-0.5 text-xs font-bold mono rounded bg-emerald-500 text-slate-950">APPROVED_PRE_NEWS</span>
+              <span id="orderModeText" class="text-xs font-semibold text-emerald-300 mono">MODE: EKSEKUSI 3–5 MENIT SEBELUM RILIS</span>
+            </div>
+            <h3 id="signalHeadline" class="text-2xl font-bold text-white">PRE_NEWS_BUY — XAUUSD</h3>
+            <p id="gateReason" class="text-xs text-slate-300">Confidence (86%) memenuhi syarat minimal 80% dan spread broker (18 poin) berada di bawah batas 30 poin.</p>
+          </div>
+
+          <div class="grid grid-cols-3 gap-2 bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-center shrink-0">
+            <div>
+              <span class="block text-[10px] text-slate-400 uppercase">Entry</span>
+              <span id="entryVal" class="text-sm font-bold mono text-white">2652.40</span>
+            </div>
+            <div>
+              <span class="block text-[10px] text-rose-400 uppercase">Stop Loss</span>
+              <span id="slVal" class="text-sm font-bold mono text-rose-400">2644.90</span>
+            </div>
+            <div>
+              <span class="block text-[10px] text-emerald-400 uppercase">Take Profit</span>
+              <span id="tpVal" class="text-sm font-bold mono text-emerald-400">2668.50</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3-PILLAR ANALYSIS CARDS -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-4 space-y-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-sky-400">1. Komparasi Historis FRED</span>
+            <p id="histAnalysis" class="text-xs text-slate-300 leading-relaxed">
+              Revisi NFP 2 bulan terakhir turun rata-rata -20K. Klaim pengangguran mingguan naik ke 242K, mengindikasikan tren pelemahan tenaga kerja (MISS_CONSENSUS).
+            </p>
+          </div>
+
+          <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-4 space-y-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-purple-400">2. Comprehensive Article Reader</span>
+            <p id="articleAnalysis" class="text-xs text-slate-300 leading-relaxed">
+              4 artikel riset & transkrip pidato FOMC menekankan bahwa The Fed kini lebih memprioritaskan pencegahan pelemahan pasar kerja (Dovish Cut-Rate bias).
+            </p>
+          </div>
+
+          <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-4 space-y-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-amber-400">3. Struktur Teknikal (M15)</span>
+            <p id="techAnalysis" class="text-xs text-slate-300 leading-relaxed">
+              Harga bertahan di atas EMA 50 & EMA 200. RSI di level 54 (netral), ruang gerak menuju Liquidity High 8H (2670.00) masih terbuka lebar.
+            </p>
+          </div>
+        </div>
+
+        <!-- SQLITE PREDICTIONS_LOG MEMORY TABLE -->
+        <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-5 space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <h3 class="text-base font-semibold text-white">Database Evaluasi Historis (<span class="mono text-emerald-400">predictions_log</span>)</h3>
+              <p class="text-xs text-slate-400">3 baris terakhir otomatis dimuat ke prompt AI untuk mendeteksi sensitivitas pasar (Inflasi vs Pekerjaan).</p>
+            </div>
+            <button id="clearLogBtn" class="text-xs text-slate-400 hover:text-rose-400 underline self-start sm:self-auto cursor-pointer">
+              Reset Log Demo
+            </button>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="border-b border-slate-800 text-slate-400 uppercase text-[11px]">
+                  <th class="py-2.5 px-3">Event</th>
+                  <th class="py-2.5 px-3">Forecast</th>
+                  <th class="py-2.5 px-3">Prediksi AI</th>
+                  <th class="py-2.5 px-3">Actual Rilis</th>
+                  <th class="py-2.5 px-3">Sensitivitas Pasar (Prompt Memory)</th>
+                </tr>
+              </thead>
+              <tbody id="logTableBody" class="divide-y divide-slate-800/70 text-slate-200">
+                <!-- Diisi oleh JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+    </div>
+  </div>
+
+  <script>
+    // Inisialisasi data awal (3 baris evaluasi terakhir)
+    const defaultLogs = [
+      {
+        event: "US CPI (YoY)",
+        forecast: "2.5%",
+        signal: "PRE_NEWS_BUY (84%)",
+        actual: "2.4% (Cooler)",
+        sensitivity: "Pasar sangat responsif terhadap penurunan inflasi; Gold +220 pips."
+      },
+      {
+        event: "US PPI (MoM)",
+        forecast: "0.2%",
+        signal: "WAIT (68%)",
+        actual: "0.2% (Inline)",
+        sensitivity: "Reaksi terbatas; pelaku pasar menunggu konfirmasi data tenaga kerja."
+      },
+      {
+        event: "FOMC Rate Decision",
+        forecast: "Cut 25 bps",
+        signal: "POST_NEWS_BREAKOUT (88%)",
+        actual: "Cut 25 bps (Dovish)",
+        sensitivity: "Pasar fokus pada proyeksi pengangguran; sensitivitas tinggi pada NFP berikutnya."
+      }
+    ];
+
+    let logs = JSON.parse(localStorage.getItem("predictions_log")) || defaultLogs;
+
+    const spreadSlider = document.getElementById("spreadSlider");
+    const spreadValueLabel = document.getElementById("spreadValueLabel");
+    const confSlider = document.getElementById("confSlider");
+    const confValueLabel = document.getElementById("confValueLabel");
+
+    function updateSlidersUI() {
+      const sp = parseInt(spreadSlider.value, 10);
+      if (sp > 30) {
+        spreadValueLabel.textContent = `${sp} poin (MELEBAR > 30)`;
+        spreadValueLabel.className = "text-xs font-bold mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-400";
+      } else {
+        spreadValueLabel.textContent = `${sp} poin (Normal)`;
+        spreadValueLabel.className = "text-xs font-bold mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400";
+      }
+
+      const cf = parseInt(confSlider.value, 10);
+      if (cf >= 80) {
+        confValueLabel.textContent = `${cf}% (Lolos Gate)`;
+        confValueLabel.className = "text-xs font-bold mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400";
+      } else {
+        confValueLabel.textContent = `${cf}% (< 80% Hold)`;
+        confValueLabel.className = "text-xs font-bold mono px-2 py-0.5 rounded bg-rose-500/20 text-rose-400";
+      }
+    }
+
+    spreadSlider.addEventListener("input", updateSlidersUI);
+    confSlider.addEventListener("input", updateSlidersUI);
+
+    function renderTable() {
+      const tbody = document.getElementById("logTableBody");
+      tbody.innerHTML = "";
+      logs.slice(0, 5).forEach((item, idx) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td class="py-2.5 px-3 font-medium text-white">${item.event}</td>
+          <td class="py-2.5 px-3 mono text-slate-300">${item.forecast}</td>
+          <td class="py-2.5 px-3 mono text-emerald-400">${item.signal}</td>
+          <td class="py-2.5 px-3 mono">
+            ${item.actual === "PENDING"
+              ? `<button onclick="fillActual(${idx})" class="px-2 py-0.5 bg-sky-500/20 text-sky-400 border border-sky-500/40 rounded text-[11px] hover:bg-sky-500/30 cursor-pointer">+ Input Actual</button>`
+              : `<span class="text-white">${item.actual}</span>`
+            }
+          </td>
+          <td class="py-2.5 px-3 text-slate-300">${item.sensitivity}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    window.fillActual = function(index) {
+      const actualVal = prompt("Masukkan angka Actual yang baru rilis (contoh: 145K | 4.2%):");
+      if (!actualVal) return;
+      const noteVal = prompt("Catatan reaksi pasar (contoh: NFP meleset, Gold terbang +190 pips):") || "Data aktual tercatat ke memori.";
+      logs[index].actual = actualVal;
+      logs[index].sensitivity = noteVal;
+      localStorage.setItem("predictions_log", JSON.stringify(logs));
+      renderTable();
+    };
+
+    document.getElementById("runAnalysisBtn").addEventListener("click", async () => {
+      const eventName = document.getElementById("eventSelect").value;
+      const forecast = document.getElementById("forecastInput").value;
+      const spread = parseInt(spreadSlider.value, 10);
+      const confidence = parseInt(confSlider.value, 10);
+      const endpoint = document.getElementById("apiEndpoint").value.trim();
+
+      // Jika user mengisi endpoint backend Python, panggil API asli
+      if (endpoint) {
+        try {
+          const res = await fetch(endpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ event_name: eventName, forecast, spread })
+          });
+          const data = await res.json();
+          alert("Terhubung ke Backend Python: " + JSON.stringify(data.execution_gate));
+          return;
+        } catch (err) {
+          alert("Gagal terhubung ke Backend URL, beralih ke simulasi lokal.");
+        }
+      }
+
+      // Evaluasi Confidence Gate (>=80) & Spread Filter (<=30)
+      const gateBanner = document.getElementById("gateBanner");
+      const gateBadge = document.getElementById("gateBadge");
+      const orderModeText = document.getElementById("orderModeText");
+      const signalHeadline = document.getElementById("signalHeadline");
+      const gateReason = document.getElementById("gateReason");
+
+      let recordedSignal = "";
+
+      if (confidence < 80) {
+        gateBanner.className = "bg-rose-950/40 border border-rose-500/40 rounded-2xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4";
+        gateBadge.className = "px-2.5 py-0.5 text-xs font-bold mono rounded bg-rose-500 text-white";
+        gateBadge.textContent = "BLOCKED_LOW_CONFIDENCE";
+        orderModeText.className = "text-xs font-semibold text-rose-300 mono";
+        orderModeText.textContent = "MODE: NO TRADE (WAIT)";
+        signalHeadline.textContent = `WAIT — ${eventName}`;
+        gateReason.textContent = `Confidence score (${confidence}%) di bawah ambang batas minimal 80%. Posisi dibatalkan untuk melindungi modal.`;
+        recordedSignal = `WAIT (${confidence}%)`;
+      } else if (spread > 30) {
+        gateBanner.className = "bg-amber-950/40 border border-amber-500/40 rounded-2xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4";
+        gateBadge.className = "px-2.5 py-0.5 text-xs font-bold mono rounded bg-amber-500 text-slate-950";
+        gateBadge.textContent = "DELAYED_HIGH_SPREAD";
+        orderModeText.className = "text-xs font-semibold text-amber-300 mono";
+        orderModeText.textContent = "MODE: POST_NEWS_BREAKOUT (TUNGGU CLOSE M5)";
+        signalHeadline.textContent = `POST_NEWS_BREAKOUT — XAUUSD`;
+        gateReason.textContent = `Spread melebar (${spread} poin > 30 poin). Market order Pre-News ditunda untuk menghindari slippage ekstrem; tunggu candle M5 pertama tertutup.`;
+        recordedSignal = `POST_NEWS_BREAKOUT (${confidence}%)`;
+      } else {
+        gateBanner.className = "bg-emerald-950/40 border border-emerald-500/40 rounded-2xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4";
+        gateBadge.className = "px-2.5 py-0.5 text-xs font-bold mono rounded bg-emerald-500 text-slate-950";
+        gateBadge.textContent = "APPROVED_PRE_NEWS";
+        orderModeText.className = "text-xs font-semibold text-emerald-300 mono";
+        orderModeText.textContent = "MODE: EKSEKUSI 3–5 MENIT SEBELUM RILIS";
+        signalHeadline.textContent = `PRE_NEWS_BUY — XAUUSD`;
+        gateReason.textContent = `Confidence (${confidence}%) >= 80% dan spread broker (${spread} poin <= 30 poin). Eksekusi Pre-News diizinkan.`;
+        recordedSignal = `PRE_NEWS_BUY (${confidence}%)`;
+      }
+
+      // Simpan ke log evaluasi teratas
+      logs.unshift({
+        event: eventName,
+        forecast: forecast,
+        signal: recordedSignal,
+        actual: "PENDING",
+        sensitivity: "Menunggu rilis data aktual..."
+      });
+      localStorage.setItem("predictions_log", JSON.stringify(logs));
+      renderTable();
+    });
+
+    document.getElementById("clearLogBtn").addEventListener("click", () => {
+      localStorage.removeItem("predictions_log");
+      logs = [...defaultLogs];
+      renderTable();
+    });
+
+    updateSlidersUI();
+    renderTable();
+  </script>
+</body>
+</html>
