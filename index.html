@@ -19,7 +19,7 @@
       <div>
         <div class="flex items-center gap-2.5">
           <span class="px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider bg-rose-500/20 text-rose-400 border border-rose-500/40 rounded">Red Folder AI</span>
-          <span class="text-xs text-slate-400 mono">XAUUSD / MACRO QUANT ENGINE</span>
+          <span id="connectionStatus" class="text-xs text-amber-400 mono">● MODE LOKAL (ISI URL BACKEND UNTUK LIVE AI)</span>
         </div>
         <h1 class="text-2xl md:text-3xl font-bold text-white mt-1">Macro News Prediction & Execution Terminal</h1>
         <p class="text-sm text-slate-400 mt-0.5">Komparasi Historis FRED + Comprehensive Article Reading + Confidence & Spread Gate</p>
@@ -28,11 +28,11 @@
       <!-- API ENDPOINT CONFIG -->
       <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-3 flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
         <div class="text-xs text-slate-400">
-          <span class="block font-semibold text-slate-300">Python Backend URL (Opsional)</span>
-          <span>Kosongkan untuk Mode Demo GitHub Pages</span>
+          <span class="block font-semibold text-slate-300">Python Backend HTTPS URL</span>
+          <span>Contoh: https://xxxx.trycloudflare.com/predict</span>
         </div>
-        <input id="apiEndpoint" type="text" placeholder="http://localhost:8000/predict"
-          class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-xs mono text-slate-200 focus:outline-none focus:border-emerald-500 w-full sm:w-56" />
+        <input id="apiEndpoint" type="text" placeholder="https://.../predict"
+          class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-xs mono text-slate-200 focus:outline-none focus:border-emerald-500 w-full sm:w-64" />
       </div>
     </header>
 
@@ -49,10 +49,10 @@
         <div>
           <label class="block text-xs font-medium text-slate-400 mb-1">Target Berita High Impact</label>
           <select id="eventSelect" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
-            <option value="US Non-Farm Payrolls (NFP) & Unemployment">US Non-Farm Payrolls (NFP)</option>
-            <option value="US Consumer Price Index (CPI YoY/MoM)">US Consumer Price Index (CPI)</option>
+            <option value="US Non-Farm Payrolls (NFP) and Unemployment Rate">US Non-Farm Payrolls (NFP)</option>
+            <option value="US Consumer Price Index (CPI YoY and MoM)">US Consumer Price Index (CPI)</option>
             <option value="US Producer Price Index (PPI MoM)">US Producer Price Index (PPI)</option>
-            <option value="FOMC Rate Decision & Powell Press Conf">FOMC Rate Cut / Hike Decision</option>
+            <option value="FOMC Rate Decision and Federal Reserve Press Conference">FOMC Rate Cut / Hike Decision</option>
           </select>
         </div>
 
@@ -84,11 +84,11 @@
           </div>
         </div>
 
-        <!-- CONFIDENCE OVERRIDE FOR TESTING -->
+        <!-- CONFIDENCE OVERRIDE FOR LOCAL DEMO ONLY -->
         <div class="bg-slate-950 border border-slate-800 rounded-xl p-3.5 space-y-2">
           <div class="flex justify-between items-center">
-            <label class="text-xs font-medium text-slate-300">Simulasi AI Confidence Score</label>
-            <span id="confValueLabel" class="text-xs font-bold mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400">86%</span>
+            <label class="text-xs font-medium text-slate-300">Fallback Confidence (Jika Tanpa Backend)</label>
+            <span id="confValueLabel" class="text-xs font-bold mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400">86% (Lolos Gate)</span>
           </div>
           <input id="confSlider" type="range" min="40" max="98" value="86"
             class="w-full accent-emerald-500 cursor-pointer" />
@@ -100,7 +100,7 @@
         </div>
 
         <button id="runAnalysisBtn"
-          class="w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-xl text-sm transition shadow-lg shadow-emerald-950/50 cursor-pointer">
+          class="w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-700 text-white font-semibold rounded-xl text-sm transition shadow-lg shadow-emerald-950/50 cursor-pointer">
           Jalankan Prediksi & Evaluasi Gate
         </button>
       </section>
@@ -109,28 +109,28 @@
       <section class="lg:col-span-8 space-y-6">
 
         <!-- EXECUTION GATE BANNER -->
-        <div id="gateBanner" class="bg-emerald-950/40 border border-emerald-500/40 rounded-2xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div id="gateBanner" class="bg-slate-900/80 border border-slate-700 rounded-2xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div class="space-y-1">
             <div class="flex items-center gap-2">
-              <span id="gateBadge" class="px-2.5 py-0.5 text-xs font-bold mono rounded bg-emerald-500 text-slate-950">APPROVED_PRE_NEWS</span>
-              <span id="orderModeText" class="text-xs font-semibold text-emerald-300 mono">MODE: EKSEKUSI 3–5 MENIT SEBELUM RILIS</span>
+              <span id="gateBadge" class="px-2.5 py-0.5 text-xs font-bold mono rounded bg-slate-700 text-slate-200">READY</span>
+              <span id="orderModeText" class="text-xs font-semibold text-slate-400 mono">MENUNGGU EKSEKUSI ANALISIS</span>
             </div>
-            <h3 id="signalHeadline" class="text-2xl font-bold text-white">PRE_NEWS_BUY — XAUUSD</h3>
-            <p id="gateReason" class="text-xs text-slate-300">Confidence (86%) memenuhi syarat minimal 80% dan spread broker (18 poin) berada di bawah batas 30 poin.</p>
+            <h3 id="signalHeadline" class="text-2xl font-bold text-white">Pilih Event & Klik Jalankan Prediksi</h3>
+            <p id="gateReason" class="text-xs text-slate-400">Masukkan URL Backend Python di pojok kanan atas untuk menarik data FRED, membaca artikel berita, dan menjalankan Gemini AI.</p>
           </div>
 
           <div class="grid grid-cols-3 gap-2 bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-center shrink-0">
             <div>
               <span class="block text-[10px] text-slate-400 uppercase">Entry</span>
-              <span id="entryVal" class="text-sm font-bold mono text-white">2652.40</span>
+              <span id="entryVal" class="text-sm font-bold mono text-white">-</span>
             </div>
             <div>
               <span class="block text-[10px] text-rose-400 uppercase">Stop Loss</span>
-              <span id="slVal" class="text-sm font-bold mono text-rose-400">2644.90</span>
+              <span id="slVal" class="text-sm font-bold mono text-rose-400">-</span>
             </div>
             <div>
               <span class="block text-[10px] text-emerald-400 uppercase">Take Profit</span>
-              <span id="tpVal" class="text-sm font-bold mono text-emerald-400">2668.50</span>
+              <span id="tpVal" class="text-sm font-bold mono text-emerald-400">-</span>
             </div>
           </div>
         </div>
@@ -139,22 +139,22 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-4 space-y-2">
             <span class="text-xs font-bold uppercase tracking-wider text-sky-400">1. Komparasi Historis FRED</span>
-            <p id="histAnalysis" class="text-xs text-slate-300 leading-relaxed">
-              Revisi NFP 2 bulan terakhir turun rata-rata -20K. Klaim pengangguran mingguan naik ke 242K, mengindikasikan tren pelemahan tenaga kerja (MISS_CONSENSUS).
+            <p id="histAnalysis" class="text-xs text-slate-400 leading-relaxed">
+              Belum ada data. Jalankan analisis untuk menarik riwayat CPI/PPI/NFP & revisi 6 bulan terakhir.
             </p>
           </div>
 
           <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-4 space-y-2">
             <span class="text-xs font-bold uppercase tracking-wider text-purple-400">2. Comprehensive Article Reader</span>
-            <p id="articleAnalysis" class="text-xs text-slate-300 leading-relaxed">
-              4 artikel riset & transkrip pidato FOMC menekankan bahwa The Fed kini lebih memprioritaskan pencegahan pelemahan pasar kerja (Dovish Cut-Rate bias).
+            <p id="articleAnalysis" class="text-xs text-slate-400 leading-relaxed">
+              Belum ada data. AI akan mengekstrak teks penuh dari 4 artikel makro & pidato FOMC terbaru.
             </p>
           </div>
 
           <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-4 space-y-2">
             <span class="text-xs font-bold uppercase tracking-wider text-amber-400">3. Struktur Teknikal (M15)</span>
-            <p id="techAnalysis" class="text-xs text-slate-300 leading-relaxed">
-              Harga bertahan di atas EMA 50 & EMA 200. RSI di level 54 (netral), ruang gerak menuju Liquidity High 8H (2670.00) masih terbuka lebar.
+            <p id="techAnalysis" class="text-xs text-slate-400 leading-relaxed">
+              Belum ada data. AI akan memeriksa EMA 50/200, RSI 14, ATR 14, serta Liquidity High/Low 8 jam terakhir.
             </p>
           </div>
         </div>
@@ -167,7 +167,7 @@
               <p class="text-xs text-slate-400">3 baris terakhir otomatis dimuat ke prompt AI untuk mendeteksi sensitivitas pasar (Inflasi vs Pekerjaan).</p>
             </div>
             <button id="clearLogBtn" class="text-xs text-slate-400 hover:text-rose-400 underline self-start sm:self-auto cursor-pointer">
-              Reset Log Demo
+              Reset Log Tampilan
             </button>
           </div>
 
@@ -182,9 +182,7 @@
                   <th class="py-2.5 px-3">Sensitivitas Pasar (Prompt Memory)</th>
                 </tr>
               </thead>
-              <tbody id="logTableBody" class="divide-y divide-slate-800/70 text-slate-200">
-                <!-- Diisi oleh JavaScript -->
-              </tbody>
+              <tbody id="logTableBody" class="divide-y divide-slate-800/70 text-slate-200"></tbody>
             </table>
           </div>
         </div>
@@ -194,60 +192,91 @@
   </div>
 
   <script>
-    // Inisialisasi data awal (3 baris evaluasi terakhir)
     const defaultLogs = [
       {
+        dbId: null,
         event: "US CPI (YoY)",
         forecast: "2.5%",
         signal: "PRE_NEWS_BUY (84%)",
         actual: "2.4% (Cooler)",
         sensitivity: "Pasar sangat responsif terhadap penurunan inflasi; Gold +220 pips."
-      },
-      {
-        event: "US PPI (MoM)",
-        forecast: "0.2%",
-        signal: "WAIT (68%)",
-        actual: "0.2% (Inline)",
-        sensitivity: "Reaksi terbatas; pelaku pasar menunggu konfirmasi data tenaga kerja."
-      },
-      {
-        event: "FOMC Rate Decision",
-        forecast: "Cut 25 bps",
-        signal: "POST_NEWS_BREAKOUT (88%)",
-        actual: "Cut 25 bps (Dovish)",
-        sensitivity: "Pasar fokus pada proyeksi pengangguran; sensitivitas tinggi pada NFP berikutnya."
       }
     ];
 
     let logs = JSON.parse(localStorage.getItem("predictions_log")) || defaultLogs;
 
+    const apiInput = document.getElementById("apiEndpoint");
+    const connStatus = document.getElementById("connectionStatus");
     const spreadSlider = document.getElementById("spreadSlider");
     const spreadValueLabel = document.getElementById("spreadValueLabel");
     const confSlider = document.getElementById("confSlider");
     const confValueLabel = document.getElementById("confValueLabel");
 
+    // Simpan URL API di browser agar tidak perlu ketik ulang
+    apiInput.value = localStorage.getItem("saved_api_endpoint") || "";
+    apiInput.addEventListener("input", () => {
+      localStorage.setItem("saved_api_endpoint", apiInput.value.trim());
+      if (apiInput.value.trim()) {
+        connStatus.textContent = "● SIAP TERHUBUNG KE PYTHON BACKEND";
+        connStatus.className = "text-xs text-emerald-400 mono";
+      } else {
+        connStatus.textContent = "● MODE LOKAL (ISI URL BACKEND UNTUK LIVE AI)";
+        connStatus.className = "text-xs text-amber-400 mono";
+      }
+    });
+
     function updateSlidersUI() {
       const sp = parseInt(spreadSlider.value, 10);
-      if (sp > 30) {
-        spreadValueLabel.textContent = `${sp} poin (MELEBAR > 30)`;
-        spreadValueLabel.className = "text-xs font-bold mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-400";
-      } else {
-        spreadValueLabel.textContent = `${sp} poin (Normal)`;
-        spreadValueLabel.className = "text-xs font-bold mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400";
-      }
+      spreadValueLabel.textContent = sp > 30 ? `${sp} poin (MELEBAR > 30)` : `${sp} poin (Normal)`;
+      spreadValueLabel.className = sp > 30
+        ? "text-xs font-bold mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-400"
+        : "text-xs font-bold mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400";
 
       const cf = parseInt(confSlider.value, 10);
-      if (cf >= 80) {
-        confValueLabel.textContent = `${cf}% (Lolos Gate)`;
-        confValueLabel.className = "text-xs font-bold mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400";
-      } else {
-        confValueLabel.textContent = `${cf}% (< 80% Hold)`;
-        confValueLabel.className = "text-xs font-bold mono px-2 py-0.5 rounded bg-rose-500/20 text-rose-400";
-      }
+      confValueLabel.textContent = cf >= 80 ? `${cf}% (Lolos Gate)` : `${cf}% (< 80% Hold)`;
+      confValueLabel.className = cf >= 80
+        ? "text-xs font-bold mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400"
+        : "text-xs font-bold mono px-2 py-0.5 rounded bg-rose-500/20 text-rose-400";
     }
 
     spreadSlider.addEventListener("input", updateSlidersUI);
     confSlider.addEventListener("input", updateSlidersUI);
+
+    function applyDecisionToUI(gateStatus, modeText, headline, reason, entry, sl, tp, histText, artText, techText) {
+      const gateBanner = document.getElementById("gateBanner");
+      const gateBadge = document.getElementById("gateBadge");
+      const orderModeText = document.getElementById("orderModeText");
+
+      if (gateStatus === "BLOCKED_LOW_CONFIDENCE") {
+        gateBanner.className = "bg-rose-950/40 border border-rose-500/40 rounded-2xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4";
+        gateBadge.className = "px-2.5 py-0.5 text-xs font-bold mono rounded bg-rose-500 text-white";
+        orderModeText.className = "text-xs font-semibold text-rose-300 mono";
+      } else if (gateStatus === "DELAYED_HIGH_SPREAD") {
+        gateBanner.className = "bg-amber-950/40 border border-amber-500/40 rounded-2xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4";
+        gateBadge.className = "px-2.5 py-0.5 text-xs font-bold mono rounded bg-amber-500 text-slate-950";
+        orderModeText.className = "text-xs font-semibold text-amber-300 mono";
+      } else {
+        gateBanner.className = "bg-emerald-950/40 border border-emerald-500/40 rounded-2xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4";
+        gateBadge.className = "px-2.5 py-0.5 text-xs font-bold mono rounded bg-emerald-500 text-slate-950";
+        orderModeText.className = "text-xs font-semibold text-emerald-300 mono";
+      }
+
+      gateBadge.textContent = gateStatus;
+      orderModeText.textContent = `MODE: ${modeText}`;
+      document.getElementById("signalHeadline").textContent = headline;
+      document.getElementById("gateReason").textContent = reason;
+
+      document.getElementById("entryVal").textContent = entry;
+      document.getElementById("slVal").textContent = sl;
+      document.getElementById("tpVal").textContent = tp;
+
+      document.getElementById("histAnalysis").textContent = histText;
+      document.getElementById("histAnalysis").className = "text-xs text-slate-200 leading-relaxed";
+      document.getElementById("articleAnalysis").textContent = artText;
+      document.getElementById("articleAnalysis").className = "text-xs text-slate-200 leading-relaxed";
+      document.getElementById("techAnalysis").textContent = techText;
+      document.getElementById("techAnalysis").className = "text-xs text-slate-200 leading-relaxed";
+    }
 
     function renderTable() {
       const tbody = document.getElementById("logTableBody");
@@ -270,84 +299,150 @@
       });
     }
 
-    window.fillActual = function(index) {
+    window.fillActual = async function(index) {
       const actualVal = prompt("Masukkan angka Actual yang baru rilis (contoh: 145K | 4.2%):");
       if (!actualVal) return;
       const noteVal = prompt("Catatan reaksi pasar (contoh: NFP meleset, Gold terbang +190 pips):") || "Data aktual tercatat ke memori.";
+
       logs[index].actual = actualVal;
       logs[index].sensitivity = noteVal;
       localStorage.setItem("predictions_log", JSON.stringify(logs));
       renderTable();
+
+      // Sinkronkan ke SQLite Python jika endpoint aktif
+      const endpoint = apiInput.value.trim();
+      if (endpoint && logs[index].dbId) {
+        const baseUrl = endpoint.replace(/\/predict\/?$/, "");
+        await fetch(`${baseUrl}/update-actual`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            record_id: logs[index].dbId,
+            actual_released: actualVal,
+            sensitivity_note: noteVal
+          })
+        }).catch(() => {});
+      }
     };
 
     document.getElementById("runAnalysisBtn").addEventListener("click", async () => {
+      const btn = document.getElementById("runAnalysisBtn");
       const eventName = document.getElementById("eventSelect").value;
       const forecast = document.getElementById("forecastInput").value;
+      const previous = document.getElementById("previousInput").value;
       const spread = parseInt(spreadSlider.value, 10);
-      const confidence = parseInt(confSlider.value, 10);
-      const endpoint = document.getElementById("apiEndpoint").value.trim();
+      const fallbackConf = parseInt(confSlider.value, 10);
+      const endpoint = apiInput.value.trim();
 
-      // Jika user mengisi endpoint backend Python, panggil API asli
+      // MODE 1: LIVE PYTHON AI BACKEND
       if (endpoint) {
+        if (window.location.protocol === "https:" && endpoint.startsWith("http://")) {
+          alert("Browser memblokir koneksi dari HTTPS (GitHub Pages) ke HTTP biasa. Gunakan URL HTTPS dari Cloudflare Tunnel (trycloudflare.com) atau ngrok.");
+          return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = "AI Sedang Membaca FRED & Artikel (5-12 detik)...";
+        connStatus.textContent = "● MENGHUBUNGI MESIN AI PYTHON...";
+        connStatus.className = "text-xs text-sky-400 mono";
+
         try {
           const res = await fetch(endpoint, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ event_name: eventName, forecast, spread })
+            body: JSON.stringify({
+              event_name: eventName,
+              forecast: forecast,
+              previous: previous,
+              spread: spread,
+              ticker: "GC=F"
+            })
           });
+
+          if (!res.ok) {
+            const errData = await res.json().catch(() => ({}));
+            throw new Error(errData.detail || `HTTP Error ${res.status}`);
+          }
+
           const data = await res.json();
-          alert("Terhubung ke Backend Python: " + JSON.stringify(data.execution_gate));
-          return;
+          const ai = data.ai_prediction;
+          const gate = data.execution_gate;
+
+          applyDecisionToUI(
+            gate.execution_status,
+            gate.final_order_mode,
+            `${ai.action_signal} (${ai.confidence_score}%) — ${ai.predicted_data_surprise}`,
+            `${gate.reason} | Taktik: ${ai.execution_notes}`,
+            ai.entry_price,
+            ai.stop_loss,
+            ai.take_profit,
+            ai.historical_comparison_analysis,
+            ai.article_narrative_synthesis,
+            ai.technical_alignment
+          );
+
+          logs.unshift({
+            dbId: data.db_record_id,
+            event: eventName,
+            forecast: forecast,
+            signal: `${ai.action_signal} (${ai.confidence_score}%)`,
+            actual: "PENDING",
+            sensitivity: "Tersimpan di SQLite (predictions_log) — menunggu rilis aktual."
+          });
+          localStorage.setItem("predictions_log", JSON.stringify(logs));
+          renderTable();
+
+          connStatus.textContent = "● LIVE AI PYTHON TERHUBUNG";
+          connStatus.className = "text-xs text-emerald-400 mono";
         } catch (err) {
-          alert("Gagal terhubung ke Backend URL, beralih ke simulasi lokal.");
+          connStatus.textContent = "● GAGAL TERHUBUNG KE BACKEND";
+          connStatus.className = "text-xs text-rose-400 mono";
+          alert(`Gagal memanggil Python AI:\n${err.message}\n\nPastikan uvicorn server.py dan tunnel HTTPS sudah berjalan.`);
+        } finally {
+          btn.disabled = false;
+          btn.textContent = "Jalankan Prediksi & Evaluasi Gate";
         }
+        return;
       }
 
-      // Evaluasi Confidence Gate (>=80) & Spread Filter (<=30)
-      const gateBanner = document.getElementById("gateBanner");
-      const gateBadge = document.getElementById("gateBadge");
-      const orderModeText = document.getElementById("orderModeText");
-      const signalHeadline = document.getElementById("signalHeadline");
-      const gateReason = document.getElementById("gateReason");
+      // MODE 2: SIMULASI LOKAL (JIKA URL BACKEND KOSONG)
+      let status = "APPROVED_PRE_NEWS";
+      let mode = "EXECUTE_3_TO_5_MINS_BEFORE_RELEASE";
+      let headline = `SIMULASI: PRE_NEWS_BUY (${fallbackConf}%)`;
+      let reason = `Mode Demo Lokal: Confidence (${fallbackConf}%) >= 80% dan spread (${spread} poin) <= 30 poin.`;
 
-      let recordedSignal = "";
-
-      if (confidence < 80) {
-        gateBanner.className = "bg-rose-950/40 border border-rose-500/40 rounded-2xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4";
-        gateBadge.className = "px-2.5 py-0.5 text-xs font-bold mono rounded bg-rose-500 text-white";
-        gateBadge.textContent = "BLOCKED_LOW_CONFIDENCE";
-        orderModeText.className = "text-xs font-semibold text-rose-300 mono";
-        orderModeText.textContent = "MODE: NO TRADE (WAIT)";
-        signalHeadline.textContent = `WAIT — ${eventName}`;
-        gateReason.textContent = `Confidence score (${confidence}%) di bawah ambang batas minimal 80%. Posisi dibatalkan untuk melindungi modal.`;
-        recordedSignal = `WAIT (${confidence}%)`;
+      if (fallbackConf < 80) {
+        status = "BLOCKED_LOW_CONFIDENCE";
+        mode = "NO_TRADE";
+        headline = `SIMULASI: WAIT (${fallbackConf}%)`;
+        reason = `Mode Demo Lokal: Confidence (${fallbackConf}%) di bawah batas 80%.`;
       } else if (spread > 30) {
-        gateBanner.className = "bg-amber-950/40 border border-amber-500/40 rounded-2xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4";
-        gateBadge.className = "px-2.5 py-0.5 text-xs font-bold mono rounded bg-amber-500 text-slate-950";
-        gateBadge.textContent = "DELAYED_HIGH_SPREAD";
-        orderModeText.className = "text-xs font-semibold text-amber-300 mono";
-        orderModeText.textContent = "MODE: POST_NEWS_BREAKOUT (TUNGGU CLOSE M5)";
-        signalHeadline.textContent = `POST_NEWS_BREAKOUT — XAUUSD`;
-        gateReason.textContent = `Spread melebar (${spread} poin > 30 poin). Market order Pre-News ditunda untuk menghindari slippage ekstrem; tunggu candle M5 pertama tertutup.`;
-        recordedSignal = `POST_NEWS_BREAKOUT (${confidence}%)`;
-      } else {
-        gateBanner.className = "bg-emerald-950/40 border border-emerald-500/40 rounded-2xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4";
-        gateBadge.className = "px-2.5 py-0.5 text-xs font-bold mono rounded bg-emerald-500 text-slate-950";
-        gateBadge.textContent = "APPROVED_PRE_NEWS";
-        orderModeText.className = "text-xs font-semibold text-emerald-300 mono";
-        orderModeText.textContent = "MODE: EKSEKUSI 3–5 MENIT SEBELUM RILIS";
-        signalHeadline.textContent = `PRE_NEWS_BUY — XAUUSD`;
-        gateReason.textContent = `Confidence (${confidence}%) >= 80% dan spread broker (${spread} poin <= 30 poin). Eksekusi Pre-News diizinkan.`;
-        recordedSignal = `PRE_NEWS_BUY (${confidence}%)`;
+        status = "DELAYED_HIGH_SPREAD";
+        mode = "POST_NEWS_BREAKOUT_M5";
+        headline = `SIMULASI: POST_NEWS_BREAKOUT (${fallbackConf}%)`;
+        reason = `Mode Demo Lokal: Spread melebar (${spread} poin > 30 poin), tunggu close candle M5 pertama.`;
       }
 
-      // Simpan ke log evaluasi teratas
+      applyDecisionToUI(
+        status,
+        mode,
+        headline,
+        reason,
+        "2652.40",
+        "2644.90",
+        "2668.50",
+        `[Simulasi Lokal untuk ${eventName}] Isi Python Backend URL di kanan atas untuk menarik data historis FRED & revisi NFP/CPI sungguhan.`,
+        `[Simulasi Lokal] Isi Python Backend URL agar AI membaca 4 artikel makro & transkrip FOMC terbaru secara real-time.`,
+        `[Simulasi Lokal] Isi Python Backend URL untuk menghitung EMA 50/200, RSI 14, dan ATR 14 terbaru.`
+      );
+
       logs.unshift({
+        dbId: null,
         event: eventName,
         forecast: forecast,
-        signal: recordedSignal,
+        signal: `${headline.replace("SIMULASI: ", "")}`,
         actual: "PENDING",
-        sensitivity: "Menunggu rilis data aktual..."
+        sensitivity: "Simulasi lokal browser (bukan dari SQLite Python)."
       });
       localStorage.setItem("predictions_log", JSON.stringify(logs));
       renderTable();
